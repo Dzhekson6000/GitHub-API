@@ -23,9 +23,11 @@ ENDIF(WIN32)
 # Set source files.
 #--------------------------------------------------------------------
 AUX_SOURCE_DIRECTORY( ${PROJECT_ROOT}/source SOURCES )
+AUX_SOURCE_DIRECTORY( ${PROJECT_ROOT}/source/User SOURCES_USER )
 
 SET(PROJECT_SOURCES
     ${SOURCES}
+    ${SOURCES_USER}
 )
 
 SET( LIB_HEADERS ${PROJECT_ROOT}/include/ )
@@ -37,14 +39,43 @@ SET( HEADERS ${HEADERS} ${LIB_HEADERS})
 #--------------------------------------------------------------------
 find_package (Threads)
 SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
 #--------------------------------------------------------------------
 # Set SiTNetwork.
 #--------------------------------------------------------------------
-SET(SITNETWORK_INCLUDE_DIRS /usr/local/include/SiTNetwork )
-SET(SITNETWORK_LIBRARY /usr/local/lib/libSiTNetwork.so )
+add_library(SiTNetwork STATIC IMPORTED)
+SET_PROPERTY(TARGET SiTNetwork PROPERTY
+             IMPORTED_LOCATION  ${PROJECT_ROOT}lib/SiTNetwork/prebuilt/libSiTNetwork.a)
 
-SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} ${SITNETWORK_LIBRARY})
+SET(SITNETWORK_INCLUDE_DIRS ${PROJECT_ROOT}lib/SiTNetwork/include/ )
+
 SET( HEADERS ${HEADERS} ${SITNETWORK_INCLUDE_DIRS} )
+SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} SiTNetwork)
+
+#--------------------------------------------------------------------
+# Set JsonCpp.
+#--------------------------------------------------------------------
+add_library(JsonCpp STATIC IMPORTED)
+SET_PROPERTY(TARGET JsonCpp PROPERTY
+             IMPORTED_LOCATION  ${PROJECT_ROOT}lib/JsonCpp/prebuilt/libjsoncpp.a)
+
+SET(JSONCPP_INCLUDE_DIRS ${PROJECT_ROOT}lib/JsonCpp/include/ )
+
+SET( HEADERS ${HEADERS} ${JSONCPP_INCLUDE_DIRS} )
+SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} JsonCpp)
+
+#--------------------------------------------------------------------
+# Set OpenSSL.
+#--------------------------------------------------------------------
+find_package (OpenSSL REQUIRED)
+SET( HEADERS ${HEADERS} ${OPENSSL_INCLUDE_DIR})
+SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} ${OPENSSL_LIBRARIES})
+
+#--------------------------------------------------------------------
+# Set DL.
+#--------------------------------------------------------------------
+SET( REQUIRED_LIBRARIES ${REQUIRED_LIBRARIES} -ldl)
+
 #--------------------------------------------------------------------
 # Compile
 #--------------------------------------------------------------------
