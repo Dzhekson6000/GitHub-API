@@ -6,7 +6,6 @@ using namespace GitHubAPI;
 int main(int argc , char *argv[])
 {
     GitHub gitHub;
-    gitHub.connect();
     
     return 0;
 }
