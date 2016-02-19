@@ -12,7 +12,6 @@ namespace GitHubAPI
         virtual ~User();
         
         virtual void parse(const std::string& body) throw(ParseJsonError);
-        
     protected:
         unsigned int _id;
         std::string _login;
